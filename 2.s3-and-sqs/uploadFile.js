@@ -13,9 +13,9 @@ const {
     
     const data = await S3.putObject({
         Body: readFileSync('./item.csv'),
-        Key: 'item.csv',
+        Key: 'item.csv',  
         Bucket: 'connect-storage-talk'
     }).promise()
 
     console.log('data', JSON.stringify(data))
-})()
+})()   

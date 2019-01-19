@@ -13,8 +13,10 @@ provider:
 
 functions:
   s3-event-example:
-    handler: handler.example
+    handler: 01s3-trigger.example
     events:
       - s3:
-        bucket: connect-storage-talk
-        event: s3:PutObject
+          bucket: connect-storage-talk
+          event: s3:ObjectCreated:*
+          rules:
+            - prefix: .csv

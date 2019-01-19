@@ -1,10 +1,9 @@
 'use strict';
+const csv = require('csvtojson/v2')
 const AWS = require('aws-sdk')
 
 const S3 = new AWS.S3()
 const SQS = new AWS.SQS()
-
-const csv = require('csvtojson/v2')
 
 const getJSONFromCSV = async (bucketKey, bucketName) => {
   const {
@@ -42,10 +41,10 @@ const sendToQueue = async (data) => {
     Entries: entries
   }).promise();
 }
-
+ 
 const example = async (event) => {
   console.log('EVENT**', JSON.stringify(event))
-
+   
   const [{
     s3
   }] = event.Records
