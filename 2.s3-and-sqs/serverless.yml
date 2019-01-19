@@ -1,0 +1,45 @@
+service: s3-example # NOTE: update this with your service name
+provider:
+  name: aws
+  runtime: nodejs8.10
+  stage: dev
+  region: ${env:REGION}
+
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 's3:GetObject'
+      Resource: arn:aws:s3:::connect-storage-talk/*
+    
+    - Effect: "Allow"
+      Action:
+      - sqs:SendMessage
+      - sqs:CreateQueue
+      Resource: arn:aws:sqs:${env:REGION}:${env:ACCOUNT_ID}:${env:QUEUE_NAME}
+  
+    - Effect: "Allow" 
+      Action:
+        - "xray:PutTraceSegments"
+        - "xray:PutTelemetryRecords"
+      Resource:
+        - "*"
+plugins:
+  - serverless-dotenv-plugin
+
+functions:
+  s3-event-example:
+    handler: 01s3-trigger.example
+    healthcheck:
+      tracing: true
+    events:
+      - s3:
+        bucket: connect-storage-talk
+        event: s3:PutObject:*
+
+  sqs-event-example:
+    handler: 02sqs-trigger.example
+    healthcheck:
+      tracing: true
+    events:      
+      - sqs: arn:aws:sqs:${env:REGION}:${env:ACCOUNT_ID}:${env:QUEUE_NAME}
+        batchSize: 1
